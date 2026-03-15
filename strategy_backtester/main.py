@@ -16,12 +16,8 @@ def load_price_data(ticker: str, start: str, end: str) -> pd.DataFrame:
     return data
 
 
-def main():
-    print("Starting backtest...")
-
-    ticker = "SPY"
-    start_date = "2020-01-01"
-    end_date = "2025-01-01"
+def run_single_backtest(ticker: str, start_date: str, end_date: str, show_plots: bool = False) -> None:
+    print(f"\nRunning backtest for {ticker}...")
 
     data = load_price_data(ticker, start_date, end_date)
     data = generate_signals(data)
@@ -29,19 +25,7 @@ def main():
 
     metrics = calculate_metrics(data)
 
-    print("\nBacktest results:")
-    print(data[[
-        "Close",
-        "EMA_7",
-        "EMA_21",
-        "signal",
-        "position",
-        "market_return",
-        "strategy_return",
-        "strategy_equity"
-    ]].tail())
-
-    print("\nPerformance Metrics:")
+    print(f"\nPerformance Metrics for {ticker}:")
     for metric_name, metric_value in metrics.items():
         if pd.isna(metric_value):
             print(f"{metric_name}: NaN")
@@ -50,8 +34,18 @@ def main():
         else:
             print(f"{metric_name}: {metric_value:.2%}")
 
-    plot_price_and_emas(data)
-    plot_equity_curves(data)
+    if show_plots:
+        plot_price_and_emas(data)
+        plot_equity_curves(data)
+
+
+def main():
+    tickers = ["SPY", "QQQ", "AAPL", "MSFT"]
+    start_date = "2020-01-01"
+    end_date = "2025-01-01"
+
+    for ticker in tickers:
+        run_single_backtest(ticker, start_date, end_date, show_plots=False)
 
 
 if __name__ == "__main__":
