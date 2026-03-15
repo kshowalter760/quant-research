@@ -6,6 +6,7 @@ def simulate_equity():
     equity = [capital]
 
     for _ in range(TRADES):
+
         risk = capital * RISK_PER_TRADE
 
         if np.random.rand() < WIN_RATE:
