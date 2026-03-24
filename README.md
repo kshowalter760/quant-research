@@ -1,6 +1,8 @@
 # quant-research
 
-A collection of Python tools for quantitative trading research and risk analysis. This repository contains small projects exploring concepts used in systematic trading such as simulation, backtesting, and portfolio analysis.
+A collection of Python tools for quantitative trading research and strategy development.
+
+This repository explores core concepts in systematic investing, including simulation, backtesting, factor modeling, and risk analysis.
 
 ---
 
@@ -8,70 +10,99 @@ A collection of Python tools for quantitative trading research and risk analysis
 
 ### Monte Carlo Risk Simulator
 
-Simulates trading outcomes to study:
+Simulates trading strategy outcomes to analyze:
 
-- variance  
-- drawdowns  
-- risk of ruin  
-- distribution of equity curves  
+* variance and randomness
+* equity curve distributions
+* drawdowns and losing streaks
+* risk of ruin
+
+Focus: understanding uncertainty and probabilistic outcomes in trading systems.
 
 ---
 
 ### EMA Strategy Backtester
 
-A modular Python backtesting engine for evaluating an exponential moving average (EMA) crossover strategy using historical market data.
+A modular backtesting engine for evaluating an EMA crossover strategy across multiple assets.
 
-Features include:
+Features:
 
-- signal generation using EMA crossovers  
-- strategy backtesting and equity curve simulation  
-- performance metrics (return, volatility, Sharpe ratio, drawdown)  
-- multi-asset testing  
-- EMA parameter sweeps  
-- ranked performance summary tables  
+* signal generation using exponential moving averages
+* multi-asset testing
+* performance metrics (return, volatility, Sharpe, drawdown)
+* parameter sweeps and result comparison
+
+Focus: building and evaluating rule-based trading strategies.
 
 ---
 
-### Portfolio Analysis Tool
+### Factor Analysis Tool
 
-A portfolio construction and analysis engine for evaluating multi-asset allocations.
+A signal-driven portfolio construction framework based on momentum factors.
 
-Features include:
+Features:
 
-- historical data retrieval using `yfinance`  
-- daily return calculation for multiple assets  
-- portfolio return aggregation using custom weights  
-- equity curve construction  
-- performance metrics:
-  - total return  
-  - annualized return  
-  - volatility  
-  - Sharpe ratio  
-  - maximum drawdown  
-- correlation matrix calculation and heatmap visualization  
-- comparison of portfolio vs individual asset performance  
-- multi-portfolio comparison framework  
-- ranked portfolio performance table  
-- CSV export of results  
+* composite momentum (3m / 6m / 12m)
+* cross-sectional asset ranking
+* top-N portfolio selection
+* monthly rebalancing
+* full backtesting pipeline
+* performance metrics and visualization
 
-Example use cases:
+Focus: transitioning from static portfolios to **dynamic, signal-based allocation**.
 
-- comparing different allocation strategies  
-- analyzing diversification effects  
-- evaluating risk vs return tradeoffs  
-- experimenting with portfolio construction ideas  
+---
+
+## Technologies Used
+
+* Python
+* pandas
+* numpy
+* yfinance
+* matplotlib
+
+---
+
+## Key Concepts Covered
+
+* compounding and return modeling
+* volatility and risk measurement
+* Monte Carlo simulation
+* backtesting methodology
+* factor investing
+* portfolio construction
+* performance evaluation
 
 ---
 
 ## Purpose
 
-The goal of this repository is to build practical tools that demonstrate key ideas in quantitative finance such as:
+This repository is a structured learning and portfolio-building project focused on developing practical skills in:
 
-- expected value  
-- variance and volatility  
-- drawdowns  
-- risk analysis  
-- strategy evaluation  
-- performance analysis utilities  
-- strategy comparison frameworks  
-- portfolio construction and diversification  
+* quantitative finance
+* data-driven strategy design
+* Python for financial analysis
+
+Each project is designed to be:
+
+* modular
+* easy to extend
+* grounded in real-world concepts
+
+---
+
+## Next Steps
+
+Future additions may include:
+
+* multi-factor models
+* optimization techniques
+* transaction cost modeling
+* machine learning applications in finance
+
+---
+
+## Notes
+
+This repository is intended for educational and research purposes only and does not constitute financial advice.
+
