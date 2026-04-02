@@ -1,3 +1,4 @@
+import time
 from pprint import pprint
 
 from alerts import (
@@ -11,8 +12,11 @@ from discord_notifier import DiscordNotifier
 from state_manager import FlowTracker, StateManager, detect_repeated_flow
 from utils import first_item, save_json
 
+state = StateManager(settings.SEEN_ALERTS_PATH)
+flow_tracker = FlowTracker()
 
-def main() -> None:
+
+def run_once() -> None:
     if not settings.ARKHAM_API_KEY:
         raise ValueError("Missing ARKHAM_API_KEY environment variable.")
 
@@ -21,8 +25,7 @@ def main() -> None:
         base_url=settings.ARKHAM_BASE_URL,
     )
     notifier = DiscordNotifier(settings.DISCORD_WEBHOOK_URL)
-    state = StateManager(settings.SEEN_ALERTS_PATH)
-    flow_tracker = FlowTracker()
+
 
     print("Fetching live transfer data from Arkham...")
 
@@ -34,7 +37,6 @@ def main() -> None:
     save_json(settings.RAW_OUTPUT_PATH, raw_data)
     print(f"Saved raw response to: {settings.RAW_OUTPUT_PATH}")
 
-    # Handle response shape
     if isinstance(raw_data, dict):
         transfers = raw_data.get("transfers", [])
         if not transfers:
@@ -73,9 +75,15 @@ def main() -> None:
         tx = normalize_transfer(raw_tx)
 
         usd_value = tx.get("usd_value")
+        if usd_value is None:
+            continue
 
-        # 🔥 GLOBAL FILTER
-        if usd_value is None or float(usd_value) < settings.MIN_GLOBAL_USD:
+        try:
+            usd_value = float(usd_value)
+        except (TypeError, ValueError):
+            continue
+
+        if usd_value < settings.MIN_GLOBAL_USD:
             continue
 
         processed += 1
@@ -90,7 +98,6 @@ def main() -> None:
             f"usd={tx.get('usd_value')}"
         )
 
-        # 🔁 Pattern tracking
         key, flows = flow_tracker.add(tx)
 
         if flows and detect_repeated_flow(flows):
@@ -102,7 +109,6 @@ def main() -> None:
                     for flow in flows
                     if flow.get("usd") is not None
                 ]
-
                 avg_usd = sum(usd_values) / len(usd_values) if usd_values else 0
 
                 message = (
@@ -119,7 +125,6 @@ def main() -> None:
                 state.mark_seen(pattern_id)
                 alerts_sent += 1
 
-        # ⚡ Event alerts
         alert = build_exchange_outflow_alert(
             tx,
             min_usd_value=settings.MIN_USD_VALUE,
@@ -144,9 +149,22 @@ def main() -> None:
         state.mark_seen(alert["id"])
         alerts_sent += 1
 
-    print(f"\nDone.")
+    print("\nDone.")
     print(f"Processed (after filter): {processed}")
     print(f"Alerts sent: {alerts_sent}")
+
+
+def main() -> None:
+    print("Starting Arkham Alert Bot...")
+
+    while True:
+        try:
+            run_once()
+        except Exception as e:
+            print(f"Error: {e}")
+
+        print("Sleeping for 60 seconds...\n")
+        time.sleep(60)
 
 
 if __name__ == "__main__":
